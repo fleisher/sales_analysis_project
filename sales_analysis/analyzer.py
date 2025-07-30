@@ -1,4 +1,7 @@
+from scipy import stats
 import pandas as pd
+import numpy as np
+
 
 def total_revenue(df: pd.DataFrame) -> float:
     """Общая выручка"""
@@ -42,3 +45,23 @@ def avg_order_value(df: pd.DataFrame) -> float:
     """Средний чек"""
     order_totals = df.groupby("Invoice")["Revenue"].sum()
     return order_totals.mean()
+
+
+def revenue_stats(df: pd.DataFrame) -> dict:
+    """Базовая статистика по выручке с использованием NumPy"""
+    revenues = df["Revenue"].values
+    return {
+        "mean": float(np.mean(revenues)),
+        "median": float(np.median(revenues)),
+        "std_dev": float(np.std(revenues)),
+        "min": float(np.min(revenues)),
+        "max": float(np.max(revenues)),
+    }
+
+def revenue_confidence_interval(df: pd.DataFrame, confidence: float = 0.95) -> tuple:
+    """Доверительный интервал для среднего значения выручки"""
+    revenues = df["Revenue"].values
+    mean = np.mean(revenues)
+    sem = stats.sem(revenues)  # стандартная ошибка среднего
+    ci = stats.t.interval(confidence, len(revenues)-1, loc=mean, scale=sem)
+    return mean, ci

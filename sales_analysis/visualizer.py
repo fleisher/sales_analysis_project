@@ -53,3 +53,4 @@ def plot_top_products(df: pd.DataFrame, top_n: int = 10):
         title=f"Топ-{top_n} товаров по выручке",
     )
     fig.show()
+    return fig
